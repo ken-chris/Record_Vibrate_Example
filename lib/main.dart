@@ -21,18 +21,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   //Initialize Variables
-
-  bool _isAudioPlayer = false;
   FlutterSoundRecorder _flutterRecord = new FlutterSoundRecorder();
-  FlutterSoundPlayer _flutterPlayer = new FlutterSoundPlayer();
   String _recorderTxt = "Getting Save Location";
-  Permission _permission = Permission.microphone;
 
-  //Utility Functions
+  //Vibrate Functions
   void _vibrate() {
     Vibration.vibrate(duration: 2000, amplitude: 255);
   }
 
+  //Recording Functions
   Future<void> startRecorder() async  {
     Directory appDocDirectory = await getExternalStorageDirectory();
     //Directory appDocDirectory = await getApplicationDocumentsDirectory();
@@ -46,8 +43,8 @@ class _MyAppState extends State<MyApp> {
     );
     await _flutterRecord.startRecorder(
       codec: Codec.aacADTS,
-      toFile: appDocDirectory.path + "/test3.mp4",
-    sampleRate: 16000
+      toFile: appDocDirectory.path + "/test3.mp4", // TODO implement text input file extension
+    sampleRate: 16000 // TODO implement variable sample_rate
     );
     print(_flutterRecord.recorderState);
     _vibrate();
@@ -55,11 +52,7 @@ class _MyAppState extends State<MyApp> {
     else { Permission.microphone.request(); }
   }
 
-
-
   void stopRecorder() async {
-    print("HI");
-    //await _flutterRecord.stopRecorder();
     print(_flutterRecord.recorderState);
     await _flutterRecord.closeAudioSession();
     print(_flutterRecord.recorderState);
