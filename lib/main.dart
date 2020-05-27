@@ -23,6 +23,12 @@ class _MyAppState extends State<MyApp> {
   //Initialize Variables
   FlutterSoundRecorder _flutterRecord = new FlutterSoundRecorder();
   String _recorderTxt = "Getting Save Location";
+  final _urlController = TextEditingController();
+  static const Text _title = Text("Ken's Very Simple App");
+  //Utility Functions
+  String _cleanURL(Text url) {
+    return "/"+ url.data.replaceAll(" ", "") + ".mp4";
+  }
 
   //Vibrate Functions
   void _vibrate() {
@@ -32,7 +38,6 @@ class _MyAppState extends State<MyApp> {
   //Recording Functions
   Future<void> startRecorder() async  {
     Directory appDocDirectory = await getExternalStorageDirectory();
-    //Directory appDocDirectory = await getApplicationDocumentsDirectory();
     if (await Permission.microphone.request().isGranted) {
     print(appDocDirectory.path);
     setState(() {
@@ -43,7 +48,7 @@ class _MyAppState extends State<MyApp> {
     );
     await _flutterRecord.startRecorder(
       codec: Codec.aacADTS,
-      toFile: appDocDirectory.path + "/test3.mp4", // TODO implement text input file extension
+      toFile: appDocDirectory.path + _cleanURL(Text(_urlController.text)),
     sampleRate: 16000 // TODO implement variable sample_rate
     );
     print(_flutterRecord.recorderState);
@@ -64,12 +69,18 @@ class _MyAppState extends State<MyApp> {
       return MaterialApp(
         home: Scaffold(
           appBar: AppBar(
-            title: const Text('Flutter Sound'),
+            title: _title,
           ),
           body: Center(
             child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              TextField(
+              controller: _urlController,
+              decoration: InputDecoration(
+                labelText: "Input File Name",
+                ),
+              ),
               Text(
                 '$_recorderTxt',
                 style: TextStyle(
